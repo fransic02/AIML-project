@@ -24,10 +24,8 @@ def load_data(load_data_size=None, data_path=None):
     attrs_to_ignore = ['race', 'is_recid']  # race is sensitive feature so we will not use them in classification, we will not consider two_years_recid for classification since its computed externally and it highly predictive for the class
     attrs_for_classification = set(attrs) - set(attrs_to_ignore)
 
-    #dataset = pd.read_csv('../data/compas-scores-two-years.csv')[attrs]
-    #dataset = pd.read_csv('../data/compas_synthetic.csv')[attrs]
     dataset = pd.read_csv(data_path)[attrs]
-
+    # remapping the is_recid feature to comply with the fair_classification algorithm
     dataset.loc[dataset.is_recid == 1, 'is_recid'] = -1
     dataset.loc[dataset.is_recid == 0, 'is_recid'] = 1
 

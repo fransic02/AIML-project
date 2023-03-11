@@ -7,6 +7,9 @@ import loss_funcs as lf # loss funcs that can be optimized subject to various co
 
 
 def test_compas_data():
+    x_train, y_train, x_control_train = load_data(load_data_size=None,
+                                               data_path='../data/compas_synthetic.csv')  # set the argument to none, or no arguments if you want to test with the whole data -- we are subsampling for performance speedup
+
     print("== Computing p-rule on test set (real data) ==")
     x_test, y_test, x_control_test = load_data(load_data_size=None,  data_path='../data/compas.csv')  # set the argument to none, or no arguments if you want to test with the whole data -- we are subsampling for performance speedup
     ut.compute_p_rule(x_control_test['race'], y_test)  # compute the p-rule in the original data
@@ -63,7 +66,7 @@ def test_compas_data():
     w_f_cons, p_f_cons, acc_f_cons = train_test_classifier()
 
     """ Classify such that we optimize for fairness subject to a certain loss in accuracy """
-    apply_fairness_constraints = 0  # flag for fairness constraint is set back to0 since we want to apply the accuracy constraint now
+    apply_fairness_constraints = 0  # flag for fairness constraint is set back to 0 since we want to apply the accuracy constraint now
     apply_accuracy_constraint = 1  # now, we want to optimize fairness subject to accuracy constraints
     sep_constraint = 0
     gamma = 0.07  # gamma controls how much loss in accuracy we are willing to incur to achieve fairness -- increase gamme to allow more loss in accuracy

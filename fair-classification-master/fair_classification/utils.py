@@ -102,17 +102,9 @@ def train_model(x, y, x_control, loss_function, apply_fairness_constraints, appl
         predicted_labels = np.sign(np.dot(w.x, x.T))
         unconstrained_loss_arr = loss_function(w.x, x, y, return_arr=True)
 
-        if sep_constraint == True: # separate gemma for different people
-            for i in range(0, len(predicted_labels)):
-                if predicted_labels[i] == 1.0 and x_control[sensitive_attrs[0]][i] == 0.0: # for now we are assuming just one sensitive attr for reverse constraint, later, extend the code to take into account multiple sensitive attrs
-                    c = ({'type': 'ineq', 'fun': constraint_protected_people, 'args':(x[i], y[i])}) # this constraint makes sure that these people stay in the positive class even in the modified classifier             
-                    constraints.append(c)
-                else:
-                    c = ({'type': 'ineq', 'fun': constraint_unprotected_people, 'args':(i, unconstrained_loss_arr[i], x[i], y[i])})                
-                    constraints.append(c)
-        else: # same gamma for everyone
-            c = ({'type': 'ineq', 'fun': constraint_gamma_all, 'args':(x,y,unconstrained_loss_arr)})
-            constraints.append(c)
+
+        c = ({'type': 'ineq', 'fun': constraint_gamma_all, 'args':(x,y,unconstrained_loss_arr)})
+        constraints.append(c)
 
         def cross_cov_abs_optm_func(weight_vec, x_in, x_control_in_arr):
             cross_cov = (x_control_in_arr - np.mean(x_control_in_arr)) * np.dot(weight_vec, x_in.T)
@@ -540,20 +532,6 @@ def split_into_train_test(x_all, y_all, x_control_all, train_fold_size):
 
     return x_all_train, y_all_train, x_control_all_train, x_all_test, y_all_test, x_control_all_test
 
-def split_into_train_test_synthetic(x_train,x_test, y_train, y_test, x_control_all, train_fold_size):
-
-    split_point = int(round(float(x_all.shape[0]) * train_fold_size))
-    x_all_train = x_all[:split_point]
-    x_all_test = x_all[split_point:]
-    y_all_train = y_all[:split_point]
-    y_all_test = y_all[split_point:]
-    x_control_all_train = {}
-    x_control_all_test = {}
-    for k in x_control_all.keys():
-        x_control_all_train[k] = x_control_all[k][:split_point]
-        x_control_all_test[k] = x_control_all[k][split_point:]
-
-    return x_all_train, y_all_train, x_control_all_train, x_all_test, y_all_test, x_control_all_test
 
 
 def get_avg_correlation_dict(correlation_dict_arr):

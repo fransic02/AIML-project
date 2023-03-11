@@ -1,4 +1,4 @@
-# Fairness in Classification
+# Fairness in Classification in Compass scores dataset
 
  
 This repository provides a logistic regression implementation in python for the fair classification mechanisms introduced in our <a href="http://arxiv.org/abs/1507.05259" target="_blank">AISTATS'17</a>, <a href="https://arxiv.org/abs/1610.08452" target="_blank">WWW'17</a> and <a href="https://arxiv.org/abs/1707.00010" target="_blank">NIPS'17</a> papers.
